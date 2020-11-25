@@ -63,7 +63,7 @@
 	</div>
   <!-- map2 -->
   <div id="map2all">
-		<h1>More Frequent Earthquake Place in Past 30 Days</h1>
+		<h1>Earthquake Frequence in Past 30 Days</h1>
 		<div id='map2'></div>
 		<div class="map2-overlay top">
 			<div class="map2-overlay-inner">
@@ -98,7 +98,7 @@
 		</div>
 		<p>
 			<ul>
-				<li>This map depicts the tectonic plates and all earthquakes which have occurred in the past 30 days. Most earthquakes occur along the edge of the tectonic plates. and there are often mountain or  The place more earthquakes occur, the colors will be more vivid.</li>
+				<li>This map depicts land topography,the tectonic plates and earthquakes frequence which have occurred in the past 30 days. Most earthquakes occur along the edge of the tectonic plates and the mountain also locates along the edge. The place more earthquakes occur, the colors will be more vivid.</li>
 				<li><b>Function</b>
 					<ul>
 						<li>Click the tectonic plates edge for more information.</li>
@@ -277,7 +277,7 @@
  				"type":"line",
  				"source":"plateBoundary2",
  				"paint":{
- 					'line-color':'#ff0000',
+ 					'line-color':'#ff6699',
  					'line-width':2
  				}
  			});
@@ -350,7 +350,8 @@
 					'type': 'hillshade',
 		      'source': 'dem',
 					'paint':{
-						'hillshade-exaggeration':0.8
+						'hillshade-exaggeration':0.6,
+						"hillshade-shadow-color": "#666633"
 					}
 				 },
 				);
