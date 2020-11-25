@@ -63,7 +63,7 @@
 	</div>
   <!-- map2 -->
   <div id="map2all">
-		<h1>Earthquake Frequence in Past 30 Days</h1>
+		<h1>Earthquake Frequency in Past 30 Days</h1>
 		<div id='map2'></div>
 		<div class="map2-overlay top">
 			<div class="map2-overlay-inner">
@@ -79,29 +79,36 @@
 				</div>
 			</div>
 			<div class="map2-overlay-inner">
-				<div class="line">
-					<h2>Line</h2>
-					<div class="line-inner">
+				<div class="legend2">
+					<h2>Legend</h2>
+					<div class="legend2-inner">
 						<svg>
 						<line id="plate" x1="10" y1="10" x2="50" y2="10"/>
 						</svg>
 						<text>Main Plate Boundary</text>
 					</div>
-					<div class="line-inner">
+					<div class="legend2-inner">
 						<svg>
 						<line id="plate2" x1="10" y1="10" x2="50" y2="10"/>
 						</svg>
 						<text>Micro Plate Boundary</text>
+					</div>
+					<div class="legend2-inner">
+						<svg>
+						<path id="cross" d="M 23,3 L 35,13 M 35,3 L 23,13">
+						</svg>
+
+						<text>Significant Earthquakes</text>
 					</div>
 				</div>
 			</div>
 		</div>
 		<p>
 			<ul>
-				<li>This map depicts land topography,the tectonic plates and earthquakes frequence which have occurred in the past 30 days. Most earthquakes occur along the edge of the tectonic plates and the mountain also locates along the edge. The place more earthquakes occur, the colors will be more vivid.</li>
+				<li>This map depicts land topography, the tectonic plates, and the past 30 days of earthquake frequency. Most earthquakes occur along the edge of the tectonic plates and the mountain also locates along the edge. The place more earthquakes occur, the colors will be more vivid. And the significant earthquakes are shown as the cross symbol.</li>
 				<li><b>Function</b>
 					<ul>
-						<li>Click the tectonic plates edge for more information.</li>
+						<li>Click the tectonic plates edge and cross symbol for more information.</li>
 						<li>Entering a address in the toolbar to the location.</li>
 					</ul>
 				</li>
@@ -208,6 +215,7 @@
 						]
 					}
 				});
+
         //map1earthquakedaysslider
 				filterBy(0);
 				document.getElementById('slider').addEventListener('input',function(e){
@@ -283,9 +291,9 @@
  			});
 
 			map2.addSource('earthquakes2',{
- 			 'type': 'geojson',
- 			 'data': 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
- 		  });
+	 			 'type': 'geojson',
+	 			 'data': 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
+	 		 });
 
 			map2.addLayer({
  				"id":"equakes2",
@@ -339,6 +347,23 @@
  				}
  			});
 
+
+			map2.addSource('earthquakes3',{
+			 		'type': 'geojson',
+			 		'data': 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson'
+			 });
+
+			map2.addLayer({
+					"id":"equakes3",
+					"type":"symbol",
+					"source": "earthquakes3",
+					'layout': {
+						'icon-image':'level-crossing',
+						'icon-padding': 0,
+						'icon-allow-overlap': true
+					 }
+			});
+
 			map2.addSource('dem', {
 				'type': 'raster-dem',
 				'url': 'mapbox://mapbox.terrain-rgb'
@@ -355,7 +380,6 @@
 					}
 				 },
 				);
-
 		});
 
 
@@ -372,6 +396,12 @@
 			 .setHTML('<b>Plates Name: </b>' + e.features[0].properties.Name)
 			 .addTo(map2);
 		 });
+		 map2.on('click', 'equakes3', function (e) {
+			 new mapboxgl.Popup()
+			 .setLngLat(e.lngLat)
+			 .setHTML('<b>Magnitude: </b>'+ e.features[0].properties.mag + '<br><b>Place: </b>' + e.features[0].properties.place + '<br><b>Date: </b>' + new Date(e.features[0].properties.time))
+			 .addTo(map2);
+		 });
 		 //map2mousein&mouseout
 		 map2.on('mouseenter', 'pBoundary', function () {
   		 map2.getCanvas().style.cursor = 'pointer';
@@ -379,10 +409,16 @@
 		 map2.on('mouseenter', 'pBoundary2', function () {
   		 map2.getCanvas().style.cursor = 'pointer';
   	 });
+		 map2.on('mouseenter', 'equakes3', function () {
+  		 map2.getCanvas().style.cursor = 'pointer';
+  	 });
 		 map2.on('mouseleave', 'pBoundary', function () {
  		   map2.getCanvas().style.cursor = '';
  	   });
 		 map2.on('mouseleave', 'pBoundary2', function () {
+ 		   map2.getCanvas().style.cursor = '';
+ 	   });
+		 map2.on('mouseleave', 'equakes3', function () {
  		   map2.getCanvas().style.cursor = '';
  	   });
 		 //map2geocoder
