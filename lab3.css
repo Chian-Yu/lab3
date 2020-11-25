@@ -96,7 +96,7 @@ body{
 }
 
 .map2-overlay {
-  top: 480px;
+  top: 460px;
 }
 
 .map2-overlay-inner .frequency .bar{
@@ -122,4 +122,11 @@ svg{
 #plate2{
   stroke: #ff6699;
   stroke-width: 2px;
+}
+
+#cross{
+  stroke: #996633;
+  stroke-linecap: round;
+  stroke-width: 2px;
+
 }
