@@ -10,8 +10,17 @@ h1, h2, h3{
   font-weight: bold;
 }
 
-h1{
+#map1all h1{
   font-size: 34px;
+  background-color:#fcffcc;
+  line-height: 40px;
+}
+
+#map2all h1{
+  font-size: 34px;
+  color: #eff1f6;
+  background-color:#263040;
+  line-height: 40px;
 }
 
 body{
@@ -111,6 +120,6 @@ svg{
 }
 
 #plate2{
-  stroke: #ff0000;
+  stroke: #ff6699;
   stroke-width: 2px;
 }
