@@ -1,0 +1,116 @@
+#map, #map2{
+  width: 100%;
+  height: 600px;
+  margin: auto;
+}
+
+h1, h2, h3{
+  text-align:center;
+  font-family: "Broadway", serif;
+  font-weight: bold;
+}
+
+h1{
+  font-size: 34px;
+}
+
+body{
+  font-family: 'Arial', serif;
+  font-size: 14px;
+	margin: auto;
+  text-align: justify;
+  padding: 10px;
+}
+
+#map1all{
+  max-width: 1020px;
+  margin: 10px auto;
+  position:relative;
+}
+
+#map2all{
+  max-width: 1020px;
+  margin: 10px auto;
+  position:relative;
+}
+
+.map-overlay, .map2-overlay {
+  position: absolute;
+  right: 0px;
+  top: 350px;
+  width: 250px;
+  padding: 10px;
+}
+
+.map-overlay-inner, .map2-overlay-inner {
+  background-color: rgb(255, 255, 255, 0.8);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 7px;
+  margin-bottom: 7px;
+  display: block;
+}
+
+.map-overlay h2, .map2-overlay h2 {
+  line-height: 24px;
+  margin: auto;
+}
+
+#mag{
+  height: 100px;
+  line-height: 20px;
+}
+
+.barText{
+  text-align: left;
+}
+
+.bar {
+  height: 10px;
+  width: 91%;
+  margin: auto;
+  opacity: 0.6;
+  background: linear-gradient(to right, #ffe6e6, #e60000);
+}
+
+.barValue {
+  width: 9.5%;
+  display: inline-block;
+  text-align: center;
+}
+
+.map-overlay input {
+  width: 100%;
+  position: relative;
+  margin: 0;
+  cursor: ew-resize;
+}
+
+.map2-overlay {
+  top: 480px;
+}
+
+.map2-overlay-inner .frequency .bar{
+  width: 86%;
+  opacity: 1;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgb(255, 255, 255), #0066ff, rgb(51, 204, 51), rgb(255, 255, 0), rgb(204, 0, 0));
+}
+
+.map2-overlay-inner .frequency .barValue{
+  width: 15%;
+}
+
+svg{
+  width: 55px;
+  height: 15px;
+}
+
+#plate{
+  stroke: #9966ff;
+  stroke-width: 2px;
+}
+
+#plate2{
+  stroke: #ff0000;
+  stroke-width: 2px;
+}

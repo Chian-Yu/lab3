@@ -1,0 +1,401 @@
+<html>
+
+<head>
+	<title>Lab 3</title>
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+	<script src='https://d3js.org/d3.v3.min.js' charset="utf-8"></script>
+	<script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+	<link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+	<link href="lab3.css" rel="stylesheet"/>
+</head>
+
+<body>
+  <!-- geocoder -->
+	<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+	<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
+	<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+  <!-- map1 -->
+	<div id="map1all">
+	<h1>Earthquakes Occur in Past 30 Days</h1>
+	<div id='map'></div>
+	<div class="map-overlay top">
+		<div class="map-overlay-inner">
+			<div id="information" class="information">
+				<h2>Place & Magnitude</h2>
+				<div id='mag'>Hover over a circle!!</div>
+			</div>
+		</div>
+		<div class="map-overlay-inner">
+			<div class="legend">
+				<h2>Magnitude(m)</h2>
+				<div class="bar"></div>
+				<div class="barValue">0</div>
+				<div class="barValue">1</div>
+				<div class="barValue">2</div>
+				<div class="barValue">3</div>
+				<div class="barValue">4</div>
+				<div class="barValue">5</div>
+				<div class="barValue">6</div>
+				<div class="barValue">7</div>
+				<div class="barValue">8</div>
+			</div>
+		</div>
+		<div class="map-overlay-inner">
+			<h2>Past <label id="day"></label> Days</h2>
+			<input id="slider" type="range" min="0" max="28" step="1" value="0" />
+		</div>
+	</div>
+		<p>
+			<ul>
+				<li>This map depicts all earthquakes that have occurred in the past 30 days. Earthquakes are visualized with proportional symbols where earthquakes of larger magnitude are depicted with larger circles and deeper red markers.</li>
+				<li><b>Function</b>
+					<ul>
+						<li>Click and drag the time slider for different days in the past 30 days.</li>
+						<li>Hover over the circle marker for more information about the earthquake.</li>
+						<li>Entering a address in the toolbar to the location.</li>
+					</ul>
+				</li>
+				<li>Data comes from <a href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php" target="_blank"><b>the USGS Live Earthquake Feed</b></a>and is updated every minute.</li>
+			</ul>
+		</p>
+	</div>
+  <!-- map2 -->
+  <div id="map2all">
+		<h1>More Frequent Earthquake Place in Past 30 Days</h1>
+		<div id='map2'></div>
+		<div class="map2-overlay top">
+			<div class="map2-overlay-inner">
+				<div class="frequency">
+					<h2>Frequency</h2>
+					<div class="bar"></div>
+					<div class="barValue">0</div>
+					<div class="barValue">0.2</div>
+					<div class="barValue">0.4</div>
+					<div class="barValue">0.6</div>
+					<div class="barValue">0.8</div>
+					<div class="barValue">1</div>
+				</div>
+			</div>
+			<div class="map2-overlay-inner">
+				<div class="line">
+					<h2>Line</h2>
+					<div class="line-inner">
+						<svg>
+						<line id="plate" x1="10" y1="10" x2="50" y2="10"/>
+						</svg>
+						<text>Main Plate Boundary</text>
+					</div>
+					<div class="line-inner">
+						<svg>
+						<line id="plate2" x1="10" y1="10" x2="50" y2="10"/>
+						</svg>
+						<text>Micro Plate Boundary</text>
+					</div>
+				</div>
+			</div>
+		</div>
+		<p>
+			<ul>
+				<li>This map depicts the tectonic plates and all earthquakes which have occurred in the past 30 days. Most earthquakes occur along the edge of the tectonic plates. and there are often mountain or  The place more earthquakes occur, the colors will be more vivid.</li>
+				<li><b>Function</b>
+					<ul>
+						<li>Click the tectonic plates edge for more information.</li>
+						<li>Entering a address in the toolbar to the location.</li>
+					</ul>
+				</li>
+				<li>Data comes from <a href="https://github.com/fraxen/tectonicplates" target="_blank"><b>Github</b></a> and <a href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php" target="_blank"><b>the USGS Live Earthquake Feed</b></a> which updated every minute.</li>
+			</ul>
+		</p>
+  </div>
+
+	<script>
+
+	mapboxgl.accessToken = 'pk.eyJ1IjoiY2hpYW55dSIsImEiOiJja2hjcG5ubXUwMXZ4Mnp0OW93enk5Yjh2In0.PgRvkVtqOFh9ew6lp-BFuw';
+
+
+  //map1
+	var map = new mapboxgl.Map({
+	    container: 'map',
+	    style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+	    zoom: 1, // starting zoom
+			center:[-150, 13]
+	});
+
+	//map1earthquakedaysslider
+	var days = [
+		'1',
+		'2',
+		'3',
+		'4',
+		'5',
+		'6',
+		'7',
+		'8',
+		'9',
+		'10',
+		'11',
+		'12',
+		'13',
+		'14',
+		'15',
+		'16',
+		'17',
+		'18',
+		'19',
+		'20',
+		'21',
+		'22',
+		'23',
+		'24',
+		'25',
+		'27',
+		'28',
+		'29',
+		'30',
+		'31'
+	];
+
+	function filterBy(day){
+		var filters = ['==', 'day', day];
+		map.setFilter('equakes', filters);
+		document.getElementById('day').textContent = days[day];
+	}
+
+	map.on('load', function(){
+		//map1earthquakedayscount
+		d3.json(
+			'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson',
+			function(err, data){
+				if (err) throw err;
+				data.features = data.features.map(function(d){
+					var dayUnit = 1000 * 60 * 60 * 24;
+					var time1 = d.properties.time;
+					var time2 = Date.now();
+					d.properties.day = Math.round((time2-time1)/dayUnit);
+					return d;
+				});
+				//map1addsource
+				map.addSource('earthquakes',{
+					'type': 'geojson',
+					data: data
+				});
+        //map1addlayer
+				map.addLayer({
+					"id":"equakes",
+					"type":"circle",
+					"source": "earthquakes",
+					"paint":{
+						'circle-color':[
+							'interpolate',
+							['linear'],
+							['get','mag'],
+							0,
+							'#ffe6e6',
+							8,
+							'#e60000'
+						],
+						'circle-opacity': 0.7,
+						'circle-radius': [
+							'interpolate',
+							['linear'],
+							['get', 'mag'],
+							0,
+							2,
+							8,
+							15
+						]
+					}
+				});
+        //map1earthquakedaysslider
+				filterBy(0);
+				document.getElementById('slider').addEventListener('input',function(e){
+					var day = parseInt(e.target.value, 10);
+					filterBy(day);
+				});
+			}
+		);
+		});
+    //map1hoverinformation&mousein&mouseout
+		map.on('mouseenter', 'equakes', function (e) {
+ 			 map.getCanvas().style.cursor = 'pointer';
+ 			 if (e.features.length > 0) {
+ 			    document.getElementById('mag').innerHTML = '<b>Magnitude: </b>'+ e.features[0].properties.mag + '<br><b>Place: </b>' + e.features[0].properties.place + '<br><b>Date: </b>' + new Date(e.features[0].properties.time)
+ 			  }
+ 				else {
+ 			    document.getElementById('mag').innerHTML = 'Hover over a circle!!';
+ 			  };
+ 	 });
+	 map.on('mouseleave', 'equakes', function () {
+		 map.getCanvas().style.cursor = '';
+		 document.getElementById('mag').innerHTML = 'Hover over a circle!!';
+	 });
+   //map1geocoder
+	 map.addControl(
+		new MapboxGeocoder({
+		accessToken: mapboxgl.accessToken,
+		mapboxgl: mapboxgl
+		})
+		);
+   //map1navigation
+	 map.addControl(new mapboxgl.NavigationControl());
+
+
+   //map2
+	 var map2 = new mapboxgl.Map({
+ 	    container: 'map2',
+ 	    style: 'mapbox://styles/chianyu/ckhwzkrxm0crc19phdze4wz25', // stylesheet location
+ 	    zoom: 1, // starting zoom
+			center:[-150, 13]
+ 	});
+
+	 map2.on('load', function(){
+
+		 map2.addSource('plateBoundary',{
+			 'type': 'geojson',
+			 'data': 'Plate_Interface.geojson'
+		 });
+
+		 map2.addLayer({
+			 "id":"pBoundary",
+			 "type":"line",
+			 "source":"plateBoundary",
+			 "paint":{
+				 'line-color':'#9966ff',
+				 'line-width':2
+			 }
+		 });
+
+		 map2.addSource('plateBoundary2',{
+ 				'type': 'geojson',
+ 				'data': 'Micro_Plates_and_Major_Fault_Zones.geojson'
+ 			});
+
+ 			map2.addLayer({
+ 				"id":"pBoundary2",
+ 				"type":"line",
+ 				"source":"plateBoundary2",
+ 				"paint":{
+ 					'line-color':'#ff0000',
+ 					'line-width':2
+ 				}
+ 			});
+
+			map2.addSource('earthquakes2',{
+ 			 'type': 'geojson',
+ 			 'data': 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
+ 		  });
+
+			map2.addLayer({
+ 				"id":"equakes2",
+ 				"type":"heatmap",
+ 				"source":"earthquakes2",
+ 				"paint":{
+					'heatmap-intensity': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						0,
+						1,
+						18,
+						4
+					],
+					'heatmap-color': [
+						'interpolate',
+						['linear'],
+						['heatmap-density'],
+						0,
+						'rgba(255, 255, 255, 0)',
+						0.2,
+						'rgb(255, 255, 255)',
+						0.4,
+						'#0066ff',
+						0.6,
+						'rgb(51, 204, 51)',
+						0.8,
+						'rgb(255, 255, 0)',
+						1,
+						'rgb(204, 0, 0)'
+					],
+					'heatmap-radius': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						0,
+						2,
+						15,
+						30
+					],
+					'heatmap-opacity': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						3,
+						1,
+						15,
+						0
+					]
+ 				}
+ 			});
+
+			map2.addSource('dem', {
+				'type': 'raster-dem',
+				'url': 'mapbox://mapbox.terrain-rgb'
+			});
+
+			map2.addLayer(
+				{
+					'id': 'hillshading',
+					'type': 'hillshade',
+		      'source': 'dem',
+					'paint':{
+						'hillshade-exaggeration':0.8
+					}
+				 },
+				);
+
+		});
+
+
+		 //map2mouseclick
+		 map2.on('click', 'pBoundary', function (e) {
+			 new mapboxgl.Popup()
+			 .setLngLat(e.lngLat)
+			 .setHTML("<b>Plates Name: </b>" + e.features[0].properties.Name)
+			 .addTo(map2);
+		 });
+		 map2.on('click', 'pBoundary2', function (e) {
+			 new mapboxgl.Popup()
+			 .setLngLat(e.lngLat)
+			 .setHTML('<b>Plates Name: </b>' + e.features[0].properties.Name)
+			 .addTo(map2);
+		 });
+		 //map2mousein&mouseout
+		 map2.on('mouseenter', 'pBoundary', function () {
+  		 map2.getCanvas().style.cursor = 'pointer';
+  	 });
+		 map2.on('mouseenter', 'pBoundary2', function () {
+  		 map2.getCanvas().style.cursor = 'pointer';
+  	 });
+		 map2.on('mouseleave', 'pBoundary', function () {
+ 		   map2.getCanvas().style.cursor = '';
+ 	   });
+		 map2.on('mouseleave', 'pBoundary2', function () {
+ 		   map2.getCanvas().style.cursor = '';
+ 	   });
+		 //map2geocoder
+		map2.addControl(
+		 new MapboxGeocoder({
+		 accessToken: mapboxgl.accessToken,
+		 mapboxgl: mapboxgl
+		 })
+		 );
+		 //map2navigation
+		map2.addControl(new mapboxgl.NavigationControl());
+
+	</script>
+
+</body>
+
+</html>
